@@ -18,6 +18,10 @@
     ],
     "rewrites": [
       {
+        "source": "/info",
+        "function": "info"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
