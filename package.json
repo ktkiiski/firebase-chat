@@ -16,6 +16,7 @@
     "start": "run-p --race start:firebase start:react",
     "start:firebase": "npm --prefix='functions' run build && firebase serve -p 4000",
     "start:react": "react-scripts start",
+    "lint": "tslint --project tsconfig.json",
     "build": "react-scripts build && npm --prefix='functions' run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -31,6 +32,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "tslint": "^5.14.0"
   }
 }

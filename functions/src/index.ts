@@ -6,13 +6,13 @@ import * as functions from 'firebase-functions';
 export const api = functions.https.onRequest((request, response) => {
   response.setHeader('Content-Type', 'application/json');
   response.send(JSON.stringify({
-    method: JSON.stringify(request.method),
-    baseUrl: JSON.stringify(request.baseUrl),
-    hostname: JSON.stringify(request.hostname),
-    path: JSON.stringify(request.path),
-    query: JSON.stringify(request.query),
-    params: JSON.stringify(request.params),
-    url: JSON.stringify(request.url),
-    originalUrl: JSON.stringify(request.originalUrl),
+    method: request.method,
+    baseUrl: request.baseUrl,
+    hostname: request.hostname,
+    path: request.path,
+    query: request.query,
+    params: request.params,
+    url: request.url,
+    originalUrl: request.originalUrl,
   }));
 });

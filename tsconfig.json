@@ -17,6 +17,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
     "jsx": "preserve"
   },
   "include": [
