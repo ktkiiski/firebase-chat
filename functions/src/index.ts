@@ -1,5 +1,8 @@
 import * as functions from 'firebase-functions';
 import * as express from 'express';
+import { initializeApp, firestore } from 'firebase-admin';
+
+initializeApp();
 
 const app = express();
 
@@ -17,20 +20,17 @@ app.get('/api/info', respond(async (request) => {
 }));
 
 app.get('/api/rooms', respond(async (request) => {
-  return [{
-    id: "foo",
-    name: "Foo",
-  }, {
-    id: "bar",
-    name: "Bar",
-  }];
+  const rooms = await firestore().collection('rooms').get();
+  return rooms.docs.map(doc => ({
+    id: doc.id, ...doc.data(),
+  }));
 }));
 
 app.post('/api/rooms', respond(async (request) => {
-  return {
-    id: 'xxx',
-    name: request.body.name,
-  };
+  const {name} = request.body;
+  const data = {name};
+  const doc = await firestore().collection('rooms').add(data);
+  return { id: doc.id, ...data };
 }));
 
 function respond(cb: (req: express.Request) => Promise<any>) {
