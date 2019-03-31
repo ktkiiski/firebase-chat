@@ -14,6 +14,9 @@
 # misc
 .DS_Store
 
+# Visual Studio Code workspace settings
+/.vscode
+
 # dotenv environment variables file
 .env
 .env.local
