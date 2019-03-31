@@ -1,4 +1,4 @@
-export async function request<T = any>(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', url: string, payload: any) {
+export async function request<T = any>(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', url: string, payload?: any) {
   const headers: Record<string, string> = {};
   if (payload) {
     headers['Content-Type'] = 'application/json';

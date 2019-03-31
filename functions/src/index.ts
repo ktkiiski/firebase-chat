@@ -19,7 +19,7 @@ app.get('/api/info', respond(async (request) => {
   };
 }));
 
-app.get('/api/rooms', respond(async (request) => {
+app.get('/api/rooms', respond(async () => {
   const rooms = await firestore().collection('rooms').get();
   return rooms.docs.map(doc => ({
     id: doc.id, ...doc.data(),
@@ -30,6 +30,35 @@ app.post('/api/rooms', respond(async (request) => {
   const {name} = request.body;
   const data = {name};
   const doc = await firestore().collection('rooms').add(data);
+  return { id: doc.id, ...data };
+}));
+
+app.get('/api/rooms/:roomId/messages', respond(async (request) => {
+  const messages = await firestore()
+    .collection('rooms')
+    .doc(request.params.roomId)
+    .collection('messages')
+    .orderBy('createdAt')
+    .get()
+  ;
+  return messages.docs.map(doc => ({
+    id: doc.id, ...doc.data(),
+  }));
+}));
+
+app.post('/api/rooms/:roomId/messages', respond(async (request) => {
+  const {message, senderName} = request.body;
+  const data = {
+    message,
+    senderName,
+    createdAt: new Date().toISOString(),
+  };
+  const doc = await firestore()
+    .collection('rooms')
+    .doc(request.params.roomId)
+    .collection('messages')
+    .add(data)
+  ;
   return { id: doc.id, ...data };
 }));
 

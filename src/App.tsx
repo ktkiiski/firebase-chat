@@ -3,6 +3,7 @@ import NewRoomForm from './NewRoomForm';
 import './App.css';
 import { request } from './api';
 import { Toolbar, Typography, AppBar, CssBaseline, Grid, List, ListItem, ListItemText, CircularProgress } from '@material-ui/core';
+import Chat from './Chat';
 
 
 interface Room {
@@ -14,8 +15,7 @@ function App() {
   const [rooms, setRooms] = useState<Room[] | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   async function fetchRooms() {
-    const response = await fetch('/api/rooms');
-    const result = await response.json();
+    const result = await request<Room[]>('GET', '/api/rooms');
     setRooms(result);
   }
   useEffect(() => {
@@ -36,6 +36,7 @@ function App() {
       ))}
     </List>
   );
+  const content = selectedRoomId ? <Chat roomId={selectedRoomId} /> : null;
   return (
     <div className="App">
       <CssBaseline />
@@ -55,7 +56,9 @@ function App() {
             </div>
           </Grid>
           <Grid item xs={9}>
-            <div className="content">{selectedRoomId}</div>
+            <div className="content">
+              {content}
+            </div>
           </Grid>
         </Grid>
       </div>
