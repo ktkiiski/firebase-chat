@@ -1,19 +1,17 @@
-.App {
-  text-align: center;
+.app {
   background-color: #282c34;
   min-height: 100vh;
   color: white;
 }
 
-.App-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 20vh;
-  font-size: calc(10px + 2vmin);
+.main {
+  padding-top: 64px;
 }
 
-.App-link {
-  color: #61dafb;
+.sidebar {
+  padding: 10px;
+}
+
+.content {
+  padding: 10px;
 }

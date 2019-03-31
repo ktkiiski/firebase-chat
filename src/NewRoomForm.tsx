@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { TextField, Button } from '@material-ui/core';
 
 interface NewRoomFormProps {
   onSubmit: (roomName: string) => Promise<void>;
@@ -22,17 +23,18 @@ function NewRoomForm({onSubmit}: NewRoomFormProps) {
   }
   return (
     <form onSubmit={onFormSubmit}>
-      <label>Create room</label>
-      <input
+      <TextField
+        label="Create room"
         value={name}
         onChange={(event) => setName(event.target.value)}
         placeholder="Type room name"
         disabled={isLoading}
+        fullWidth
       />
-      <button
+      <Button
         type="submit"
         disabled={!name || isLoading}
-      >Create</button>
+      >Create</Button>
     </form>
   )
 }
