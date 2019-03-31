@@ -1,52 +1,59 @@
 import * as functions from 'firebase-functions';
+import * as express from 'express';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-export const api = functions.https.onRequest(async (request, response) => {
-  const result = await handleRequest(request);
-  if (result) {
-    response.status(200);
-    response.setHeader('Content-Type', 'application/json');
-    response.send(JSON.stringify(result));
-  } else {
-    response.status(404);
-    response.setHeader('Content-Type', 'application/json');
-    response.send(JSON.stringify({
-      message: `Endpoint ${request.path} not found`,
-    }));
-  }
-});
+const app = express();
 
-async function handleRequest(request: functions.https.Request) {
-  // NOTE: Because this is a POC, the routing is done in a simple way!
-  if (request.path === '/info') {
-    return {
-      method: request.method,
-      baseUrl: request.baseUrl,
-      hostname: request.hostname,
-      path: request.path,
-      query: request.query,
-      params: request.params,
-      url: request.url,
-      originalUrl: request.originalUrl,
-    };
-  } else if (request.path === '/api/rooms') {
-    if (request.method === 'GET') {
-      return [{
-        id: "foo",
-        name: "Foo",
-      }, {
-        id: "bar",
-        name: "Bar",
-      }];
-    } else if (request.method === 'POST') {
-      console.log(request.body);
-      return {
-        id: 'xxx',
-        name: request.body.name,
-      };
+app.get('/api/info', respond(async (request) => {
+  return {
+    method: request.method,
+    baseUrl: request.baseUrl,
+    hostname: request.hostname,
+    path: request.path,
+    query: request.query,
+    params: request.params,
+    url: request.url,
+    originalUrl: request.originalUrl,
+  };
+}));
+
+app.get('/api/rooms', respond(async (request) => {
+  return [{
+    id: "foo",
+    name: "Foo",
+  }, {
+    id: "bar",
+    name: "Bar",
+  }];
+}));
+
+app.post('/api/rooms', respond(async (request) => {
+  return {
+    id: 'xxx',
+    name: request.body.name,
+  };
+}));
+
+function respond(cb: (req: express.Request) => Promise<any>) {
+  return async function(request: express.Request, response: express.Response) {
+    try {
+      const result = await cb(request);
+      if (result) {
+        response.status(200);
+        response.setHeader('Content-Type', 'application/json');
+        response.send(JSON.stringify(result));
+      } else {
+        response.status(404);
+        response.setHeader('Content-Type', 'application/json');
+        response.send(JSON.stringify({
+          message: `Endpoint ${request.path} not found`,
+        }));
+      }
+    } catch (error) {
+      console.error(error);
+      response.status(500);
+      response.send(String(error));
     }
   }
-  return null;
 }
+
+export const api = functions.https.onRequest(app);
