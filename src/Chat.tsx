@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CircularProgress, List, ListItem, ListItemText, TextField } from '@material-ui/core';
 import { useFirestore } from './Firebase';
 import firebase from 'firebase';
+import ConversationArea from './ConversationArea';
 
 interface Message {
   id: string;
@@ -57,25 +58,29 @@ function Chat({roomId}: ChatProps) {
   if (!messages) {
     return <CircularProgress />;
   }
+  const form = (
+    <form onSubmit={onSendMessage}>
+      <TextField
+        placeholder="Type a new message"
+        value={newMessage}
+        onChange={onMessageChange}
+        fullWidth
+      />
+    </form>
+  );
   return (
-    <List>
-      {messages.map(message => (
-        <ListItem key={message.id}>
-          <ListItemText
-            primary={message.message}
-            secondary={`${message.createdAt.toDate()} – ${message.senderName}`}
-          />
-        </ListItem>
-      ))}
-      <form onSubmit={onSendMessage}>
-        <TextField
-          placeholder="Type a new message"
-          value={newMessage}
-          onChange={onMessageChange}
-          fullWidth
-        />
-      </form>
-    </List>
+    <ConversationArea bottom={form}>
+      <List>
+        {messages.map(message => (
+          <ListItem key={message.id}>
+            <ListItemText
+              primary={message.message}
+              secondary={`${message.createdAt.toDate()} – ${message.senderName}`}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </ConversationArea>
   );
 }
 

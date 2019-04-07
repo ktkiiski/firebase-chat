@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import NewRoomForm from './NewRoomForm';
-import './App.css';
 import { request } from './api';
-import { Toolbar, Typography, AppBar, CssBaseline, Grid, List, ListItem, ListItemText, CircularProgress } from '@material-ui/core';
+import { Toolbar, Typography, CssBaseline, List, ListItem, ListItemText, CircularProgress } from '@material-ui/core';
 import Chat from './Chat';
-
+import Layout from './Layout';
 
 interface Room {
   id: string;
@@ -37,32 +36,24 @@ function App() {
     </List>
   );
   const content = selectedRoomId ? <Chat roomId={selectedRoomId} /> : null;
+  const top = (
+    <Toolbar>
+      <Typography variant='h6' color="inherit">
+        Example Chat
+      </Typography>
+    </Toolbar>
+  );
+  const left = (
+    <>
+      <NewRoomForm onSubmit={onNewRoomSubmit} />
+      {roomList}
+    </>
+  );
   return (
-    <div className="App">
+    <>
       <CssBaseline />
-      <AppBar position="fixed">
-        <Toolbar>
-          <Typography variant='h6' color="inherit">
-            Example Chat
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <div className="main">
-        <Grid container spacing={3}>
-          <Grid item xs={3}>
-            <div className="sidebar">
-              <NewRoomForm onSubmit={onNewRoomSubmit} />
-              {roomList}
-            </div>
-          </Grid>
-          <Grid item xs={9}>
-            <div className="content">
-              {content}
-            </div>
-          </Grid>
-        </Grid>
-      </div>
-    </div>
+      <Layout top={top} left={left}>{content}</Layout>
+    </>
   );
 }
 
