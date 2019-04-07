@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CircularProgress, List, ListItem, ListItemText, TextField } from '@material-ui/core';
-import { useFirestore } from './Firebase';
+import { useFirestore, useCollection } from './Firebase';
 import firebase from 'firebase';
 import ConversationArea from './ConversationArea';
 
@@ -17,23 +17,14 @@ interface ChatProps {
 
 function useMessages(roomId: string) {
   const firestore = useFirestore();
-  const [messages, setMessages] = useState<Message[] | null>(null);
-  useEffect(() => {
+  return useCollection<Message>(
     firestore
       .collection('rooms')
       .doc(roomId)
       .collection('messages')
-      .orderBy('createdAt')
-      .onSnapshot((snapshot) => {
-        const newMessages = snapshot.docs.map((doc) => {
-          const message = { id: doc.id, ...doc.data() };
-          return message as Message;
-        });
-        setMessages(newMessages)
-      })
-    ;
-  }, [roomId]);
-  return messages;
+      .orderBy('createdAt'),
+    [roomId],
+  );
 }
 
 function ChatMessage({message, senderName, createdAt}: Message) {

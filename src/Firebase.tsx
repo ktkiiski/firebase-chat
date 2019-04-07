@@ -17,6 +17,20 @@ export function useFirestore() {
   return useFirebase().firestore();
 }
 
+export function useCollection<T>(ref: firebase.firestore.Query, deps: any[]) {
+  const [items, setItems] = useState<T[] | null>(null);
+  useEffect(() => {
+    ref.onSnapshot((snapshot) => {
+      const newItems = snapshot.docs.map((doc) => {
+        const item: unknown = { id: doc.id, ...doc.data() };
+        return item as T;
+      });
+      setItems(newItems)
+    });
+  }, deps);
+  return items;
+}
+
 export function FirebaseProvider(props: {children?: React.ReactNode}) {
   const [app, setApp] = useState<null | firebase.app.App>(null);
   useEffect(() => {
