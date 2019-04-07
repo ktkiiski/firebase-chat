@@ -24,7 +24,7 @@ function NewRoomForm({onSubmit}: NewRoomFormProps) {
   return (
     <form onSubmit={onFormSubmit}>
       <TextField
-        label="Create room"
+        label="Create new room"
         value={name}
         onChange={(event) => setName(event.target.value)}
         placeholder="Type room name"

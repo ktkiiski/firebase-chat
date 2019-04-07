@@ -16,6 +16,10 @@ function App() {
   async function fetchRooms() {
     const result = await request<Room[]>('GET', '/api/rooms');
     setRooms(result);
+    // If no room is selected, then select the first loaded room
+    if (!selectedRoomId && result.length > 0) {
+      setSelectedRoomId(result[0].id);
+    }
   }
   useEffect(() => {
     fetchRooms();
@@ -29,13 +33,23 @@ function App() {
   const roomList = !rooms ? <CircularProgress /> : (
     <List component='nav'>
       {rooms.map((room) => (
-        <ListItem key={room.id} button onClick={() => setSelectedRoomId(room.id)}>
-          <ListItemText primary={room.name} />
+        <ListItem
+          key={room.id}
+          button
+          onClick={() => setSelectedRoomId(room.id)}
+          selected={!!selectedRoomId && room.id === selectedRoomId}
+        >
+          <ListItemText primary={room.name} primaryTypographyProps={{color: 'textPrimary'}} />
         </ListItem>
       ))}
     </List>
   );
-  const content = selectedRoomId ? <Chat roomId={selectedRoomId} /> : null;
+  const content = selectedRoomId ?
+    <Chat roomId={selectedRoomId} /> :
+    !rooms ?
+    <CircularProgress /> :
+    <Typography>Create a new chat from the side bar.</Typography>
+  ;
   const top = (
     <Toolbar>
       <Typography variant='h6' color="inherit">
@@ -45,8 +59,8 @@ function App() {
   );
   const left = (
     <>
-      <NewRoomForm onSubmit={onNewRoomSubmit} />
       {roomList}
+      <NewRoomForm onSubmit={onNewRoomSubmit} />
     </>
   );
   return (

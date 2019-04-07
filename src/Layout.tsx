@@ -1,25 +1,39 @@
 import React from 'react';
-import { AppBar, Grid, makeStyles, Theme } from '@material-ui/core';
+import { AppBar, makeStyles, Theme, Drawer } from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import SideBar from './SideBar';
 
+const drawerWidth = 240;
+const mobileBreakpoint = 600;
 const useStyles = makeStyles((theme: Theme) => ({
-  container: {
+  root: {
     height: '100vh',
-  },
-  main: {
-    paddingTop: '64px',
-    height: '100%',
+    overflow: 'hidden',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'stretch',
   },
-  sidebar: {
-    padding: theme.spacing(1),
-    height: '100%',
+  drawer: {
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
   },
+  appBar: {
+    // Bring to the top of the drawer
+    zIndex: theme.zIndex.drawer + 1,
+  },
+  menuButton: {
+    marginRight: 20,
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
+  },
+  toolbar: theme.mixins.toolbar,
   content: {
-    padding: theme.spacing(1),
-    height: '100%',
+    flexGrow: 1,
+    flexShrink: 1,
+    padding: theme.spacing(3),
   },
 } as const));
 
@@ -31,17 +45,35 @@ interface LayoutProps {
 
 function Layout(props: LayoutProps) {
   const styles = useStyles();
+  const isMobile = useMediaQuery(`(min-width:${mobileBreakpoint}px)`);
+  const isOpen = true;
+  const sideBar = <SideBar>{props.left}</SideBar>;
+  const drawer = isMobile ? (
+    <Drawer
+      variant="permanent"
+      open
+    >
+      <SideBar>
+        <div className={styles.toolbar} />
+        {props.left}
+      </SideBar>
+    </Drawer>
+  ) : (
+    <Drawer
+      variant="temporary"
+      anchor='left'
+      open={isOpen}
+      onClose={() => { /* */ }}
+    >{sideBar}</Drawer>
+  );
   return (
-    <div className={styles.container}>
-      <AppBar position="fixed">{props.top}</AppBar>
-      <Grid container spacing={3} className={styles.main}>
-        <Grid item xs={3}>
-          <div className={styles.sidebar}>{props.left}</div>
-        </Grid>
-        <Grid item xs={9}>
-          <div className={styles.content}>{props.children}</div>
-        </Grid>
-      </Grid>
+    <div className={styles.root}>
+      <AppBar position="fixed" className={styles.appBar}>{props.top}</AppBar>
+      <nav className={styles.drawer}>{drawer}</nav>
+      <main className={styles.content}>
+        <div className={styles.toolbar} />
+        {props.children}
+      </main>
     </div>
   );
 }
