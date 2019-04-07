@@ -36,6 +36,22 @@ function useMessages(roomId: string) {
   return messages;
 }
 
+function ChatMessage({message, senderName, createdAt}: Message) {
+  const date = createdAt.toDate();
+  const time = `${date.getHours()}:${date.getMinutes()}`
+  const sender = (
+    <strong>{senderName}</strong>
+  );
+  return (
+    <ListItem>
+      <ListItemText
+        primary={message}
+        secondary={<>{sender}{` – ${time}`}</>}
+      />
+    </ListItem>
+  );
+}
+
 function Chat({roomId}: ChatProps) {
   const firestore = useFirestore();
   const messages = useMessages(roomId);
@@ -81,14 +97,7 @@ function Chat({roomId}: ChatProps) {
   return (
     <ConversationArea bottom={form} scrollableRef={scrollableRef}>
       <List>
-        {messages.map(message => (
-          <ListItem key={message.id}>
-            <ListItemText
-              primary={message.message}
-              secondary={`${message.createdAt.toDate()} – ${message.senderName}`}
-            />
-          </ListItem>
-        ))}
+        {messages.map(message => <ChatMessage key={message.id} {...message} />)}
       </List>
     </ConversationArea>
   );
