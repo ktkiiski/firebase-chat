@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CircularProgress, List, ListItem, ListItemText, TextField } from '@material-ui/core';
 import { useFirestore } from './Firebase';
 import firebase from 'firebase';
@@ -39,7 +39,17 @@ function useMessages(roomId: string) {
 function Chat({roomId}: ChatProps) {
   const firestore = useFirestore();
   const messages = useMessages(roomId);
+  const messageCount = messages && messages.length;
+  const scrollableRef = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState('');
+
+  useEffect(() => {
+    const {current} = scrollableRef;
+    if (current) {
+      // Scroll to the bottom
+      current.scrollTop = current.scrollHeight;
+    }
+  }, [messageCount, roomId]);
 
   const onMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(event.target.value);
@@ -69,7 +79,7 @@ function Chat({roomId}: ChatProps) {
     </form>
   );
   return (
-    <ConversationArea bottom={form}>
+    <ConversationArea bottom={form} scrollableRef={scrollableRef}>
       <List>
         {messages.map(message => (
           <ListItem key={message.id}>
