@@ -1,62 +1,82 @@
 import React, { useState, useEffect } from 'react';
 import { CircularProgress, List, ListItem, ListItemText, TextField } from '@material-ui/core';
-import { request } from './api';
+import { useFirestore } from './Firebase';
+import firebase from 'firebase';
 
 interface Message {
   id: string;
   message: string;
   senderName: string;
-  createdAt: string;
+  createdAt: firebase.firestore.Timestamp;
 }
 
 interface ChatProps {
   roomId: string;
 }
 
+function useMessages(roomId: string) {
+  const firestore = useFirestore();
+  const [messages, setMessages] = useState<Message[] | null>(null);
+  useEffect(() => {
+    firestore
+      .collection('rooms')
+      .doc(roomId)
+      .collection('messages')
+      .orderBy('createdAt')
+      .onSnapshot((snapshot) => {
+        const newMessages = snapshot.docs.map((doc) => {
+          const message = { id: doc.id, ...doc.data() };
+          return message as Message;
+        });
+        setMessages(newMessages)
+      })
+    ;
+  }, [roomId]);
+  return messages;
+}
+
 function Chat({roomId}: ChatProps) {
-    const [messages, setMessages] = useState<Message[] | null>(null);
-    const [newMessage, setNewMessage] = useState('');
-    async function fetchMessages() {
-      const result = await request<Message[]>('GET', `/api/rooms/${roomId}/messages`);
-      setMessages(result);
-    }
-    useEffect(() => {
-      fetchMessages();
-    }, [roomId]);
+  const firestore = useFirestore();
+  const messages = useMessages(roomId);
+  const [newMessage, setNewMessage] = useState('');
 
-    const onMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setNewMessage(event.target.value);
-    };
+  const onMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewMessage(event.target.value);
+  };
 
-    const onSendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      setNewMessage('');
-      const message = await request<Message>('POST', `/api/rooms/${roomId}/messages`, {
-        senderName: 'Anonymous', message: newMessage,
-      });
-      setMessages(messages && messages.concat([message]));
-    };
+  const onSendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setNewMessage('');
+    await firestore.collection('rooms').doc(roomId).collection('messages').add({
+      message: newMessage,
+      senderName: 'Anonymous',
+      createdAt: firebase.firestore.Timestamp.now(),
+    });
+  };
 
-    if (!messages) {
-      return <CircularProgress />;
-    }
-    return (
-      <List>
-        {messages.map(message => (
-          <ListItem key={message.id}>
-            <ListItemText primary={message.message} secondary={message.senderName} />
-          </ListItem>
-        ))}
-        <form onSubmit={onSendMessage}>
-          <TextField
-            placeholder="Type a new message"
-            value={newMessage}
-            onChange={onMessageChange}
-            fullWidth
+  if (!messages) {
+    return <CircularProgress />;
+  }
+  return (
+    <List>
+      {messages.map(message => (
+        <ListItem key={message.id}>
+          <ListItemText
+            primary={message.message}
+            secondary={`${message.createdAt.toDate()} – ${message.senderName}`}
           />
-        </form>
-      </List>
-    );
+        </ListItem>
+      ))}
+      <form onSubmit={onSendMessage}>
+        <TextField
+          placeholder="Type a new message"
+          value={newMessage}
+          onChange={onMessageChange}
+          fullWidth
+        />
+      </form>
+    </List>
+  );
 }
 
 export default React.memo(Chat);
