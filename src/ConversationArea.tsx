@@ -1,7 +1,7 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   container: {
     height: '100%',
     display: 'flex',
@@ -12,12 +12,15 @@ const useStyles = makeStyles({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
+    overflowX: 'hidden',
+    overflowY: 'scroll',
   },
   bottom: {
+    marginTop: theme.spacing(1),
     flexGrow: 0,
     flexShrink: 0,
   },
-});
+} as const));
 
 interface ConversationAreaProps {
   children: React.ReactNode;

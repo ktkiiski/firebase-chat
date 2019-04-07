@@ -1,10 +1,12 @@
-import React from 'react';
-import { AppBar, makeStyles, Theme, Drawer } from '@material-ui/core';
+import React, { useState, useCallback } from 'react';
+import { AppBar, makeStyles, Theme, Drawer, Toolbar, IconButton } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import SideBar from './SideBar';
 
 const drawerWidth = 240;
 const mobileBreakpoint = 600;
+
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     height: '100vh',
@@ -13,11 +15,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'row',
     alignItems: 'stretch',
   },
-  drawer: {
-    [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
+  desktopDrawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  desktopDrawerPaper: {
+    width: drawerWidth,
   },
   appBar: {
     // Bring to the top of the drawer
@@ -33,7 +36,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   content: {
     flexGrow: 1,
     flexShrink: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'flex-start',
   },
 } as const));
 
@@ -45,13 +52,16 @@ interface LayoutProps {
 
 function Layout(props: LayoutProps) {
   const styles = useStyles();
-  const isMobile = useMediaQuery(`(min-width:${mobileBreakpoint}px)`);
-  const isOpen = true;
-  const sideBar = <SideBar>{props.left}</SideBar>;
-  const drawer = isMobile ? (
+  const isDesktop = useMediaQuery(`(min-width:${mobileBreakpoint}px)`);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const toggleIsOpen = useCallback(() => {
+    setIsDrawerOpen(!isDrawerOpen);
+  }, [isDrawerOpen]);
+  const drawer = isDesktop ? (
     <Drawer
       variant="permanent"
       open
+      classes={{paper: styles.desktopDrawerPaper}}
     >
       <SideBar>
         <div className={styles.toolbar} />
@@ -62,14 +72,33 @@ function Layout(props: LayoutProps) {
     <Drawer
       variant="temporary"
       anchor='left'
-      open={isOpen}
-      onClose={() => { /* */ }}
-    >{sideBar}</Drawer>
+      open={isDrawerOpen}
+      onClose={toggleIsOpen}
+    >
+      <SideBar onClick={toggleIsOpen}>
+        {props.left}
+      </SideBar>
+    </Drawer>
+  );
+  const menuButton = isDesktop ? null : (
+    <IconButton
+      color="inherit"
+      aria-label="Open drawer"
+      onClick={toggleIsOpen}
+      className={styles.menuButton}
+    >
+      <MenuIcon />
+    </IconButton>
   );
   return (
     <div className={styles.root}>
-      <AppBar position="fixed" className={styles.appBar}>{props.top}</AppBar>
-      <nav className={styles.drawer}>{drawer}</nav>
+      <AppBar position="fixed" className={styles.appBar}>
+        <Toolbar>
+          {menuButton}
+          {props.top}
+        </Toolbar>
+      </AppBar>
+      <div className={isDesktop ? styles.desktopDrawer : undefined}>{drawer}</div>
       <main className={styles.content}>
         <div className={styles.toolbar} />
         {props.children}

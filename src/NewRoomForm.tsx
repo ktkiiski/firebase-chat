@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
-import { TextField, Button } from '@material-ui/core';
+import { TextField, Button, Theme } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
+
+const useStyles = makeStyles((theme: Theme) => ({
+  form: {
+    padding: theme.spacing(1),
+  },
+} as const));
 
 interface NewRoomFormProps {
   onSubmit: (roomName: string) => Promise<void>;
 }
 
 function NewRoomForm({onSubmit}: NewRoomFormProps) {
+  const styles = useStyles();
   const [name, setName] = useState('');
   const [isLoading, setLoading] = useState(false);
+  const onClick: React.MouseEventHandler = (event) => {
+    event.stopPropagation()
+  };
   async function onFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!name) {
@@ -22,7 +33,7 @@ function NewRoomForm({onSubmit}: NewRoomFormProps) {
     }
   }
   return (
-    <form onSubmit={onFormSubmit}>
+    <form onSubmit={onFormSubmit} className={styles.form} onClick={onClick}>
       <TextField
         label="Create new room"
         value={name}
@@ -39,4 +50,4 @@ function NewRoomForm({onSubmit}: NewRoomFormProps) {
   )
 }
 
-export default NewRoomForm;
+export default React.memo(NewRoomForm);

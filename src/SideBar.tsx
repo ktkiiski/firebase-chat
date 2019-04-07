@@ -8,27 +8,22 @@ const darkTheme = createMuiTheme({
   },
 });
 
-interface SideBarProps {
-  children: React.ReactNode;
-}
-
 const useStyles = makeStyles((theme: Theme) => ({
   sidebar: {
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(1),
     height: '100%',
   },
 } as const));
 
-function SideBarContents(props: SideBarProps) {
+function SideBarContents(props: React.HTMLAttributes<HTMLDivElement>) {
   const styles = useStyles();
-  return <div className={styles.sidebar}>{props.children}</div>;
+  return <div {...props} className={styles.sidebar} />;
 }
 
-function SideBar(props: SideBarProps) {
+function SideBar(props: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <ThemeProvider theme={darkTheme}>
-      <SideBarContents>{props.children}</SideBarContents>
+      <SideBarContents {...props} />
     </ThemeProvider>
   );
 }

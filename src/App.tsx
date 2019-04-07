@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import NewRoomForm from './NewRoomForm';
 import { request } from './api';
-import { Toolbar, Typography, CssBaseline, List, ListItem, ListItemText, CircularProgress } from '@material-ui/core';
+import { Typography, CssBaseline, List, ListItem, ListItemText, CircularProgress, Divider } from '@material-ui/core';
 import Chat from './Chat';
 import Layout from './Layout';
 
@@ -25,12 +25,12 @@ function App() {
     fetchRooms();
   }, []);
 
-  async function onNewRoomSubmit(name: string) {
+  const onNewRoomSubmit = useCallback(async function (name: string) {
     const newRoom = await request<Room>('POST', '/api/rooms', {name});
     setRooms(rooms && rooms.concat([newRoom]));
-  }
+  }, [rooms]);
 
-  const roomList = !rooms ? <CircularProgress /> : (
+  const roomList = !rooms ? <CircularProgress /> : <>
     <List component='nav'>
       {rooms.map((room) => (
         <ListItem
@@ -43,7 +43,8 @@ function App() {
         </ListItem>
       ))}
     </List>
-  );
+    {rooms.length > 0 ? <Divider/> : null}
+  </>;
   const content = selectedRoomId ?
     <Chat roomId={selectedRoomId} /> :
     !rooms ?
@@ -51,11 +52,9 @@ function App() {
     <Typography>Create a new chat from the side bar.</Typography>
   ;
   const top = (
-    <Toolbar>
-      <Typography variant='h6' color="inherit">
-        Example Chat
-      </Typography>
-    </Toolbar>
+    <Typography variant='h6' color="inherit">
+      Example Chat
+    </Typography>
   );
   const left = (
     <>
