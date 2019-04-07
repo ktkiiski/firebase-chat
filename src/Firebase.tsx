@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+// tslint:disable-next-line:no-import-side-effect
+import 'firebase/firestore';
 
 export const FirebaseContext = React.createContext<firebase.app.App | null>(null);
 
@@ -15,7 +17,7 @@ export function useFirestore() {
   return useFirebase().firestore();
 }
 
-function FirebaseProvider(props: {children?: React.ReactNode}) {
+export function FirebaseProvider(props: {children?: React.ReactNode}) {
   const [app, setApp] = useState<null | firebase.app.App>(null);
   useEffect(() => {
     loadApp().then(setApp);
@@ -36,5 +38,3 @@ async function loadApp() {
   const config = await response.json();
   return firebase.initializeApp(config);
 }
-
-export default FirebaseProvider;

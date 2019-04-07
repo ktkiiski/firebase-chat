@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import FirebaseProvider from './Firebase';
+import { FirebaseProvider } from './Firebase';
 
 ReactDOM.render(<FirebaseProvider><App /></FirebaseProvider>, document.getElementById('root'));
 

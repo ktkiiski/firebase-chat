@@ -15,11 +15,14 @@
     "typescript": "3.4.1"
   },
   "scripts": {
-    "start": "run-p --race start:firebase start:react",
-    "start:firebase": "npm --prefix='functions' run build && firebase serve -p 4000",
+    "start": "npm run build:firebase && run-p --race start:firebase:serve start:react",
     "start:react": "react-scripts start",
+    "start:firebase": "npm run build:firebase && npm run start:firebase:serve",
+    "start:firebase:serve": "firebase serve -p 4000",
+    "build": "npm run build:react && npm run build:firebase",
+    "build:react": "react-scripts build",
+    "build:firebase": "npm --prefix='functions' run build",
     "lint": "tslint --project tsconfig.json",
-    "build": "react-scripts build && npm --prefix='functions' run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
