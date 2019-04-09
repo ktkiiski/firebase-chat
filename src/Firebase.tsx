@@ -1,6 +1,7 @@
+// tslint:disable:no-import-side-effect
 import React, { useState, useEffect, useContext } from 'react';
 import firebase from 'firebase/app';
-// tslint:disable-next-line:no-import-side-effect
+import 'firebase/auth';
 import 'firebase/firestore';
 
 export const FirebaseContext = React.createContext<firebase.app.App | null>(null);
@@ -17,6 +18,10 @@ export function useFirestore() {
   return useFirebase().firestore();
 }
 
+export function useAuth() {
+  return useFirebase().auth();
+}
+
 export function useCollection<T>(ref: firebase.firestore.Query, deps: any[]) {
   const [items, setItems] = useState<T[] | null>(null);
   useEffect(() => {
@@ -29,6 +34,27 @@ export function useCollection<T>(ref: firebase.firestore.Query, deps: any[]) {
     });
   }, deps);
   return items;
+}
+
+export interface AuthState {
+  id: string;
+  displayName: string | null;
+  photoUrl: string | null;
+}
+
+export function useAuthState() {
+  const auth = useAuth();
+  const [authState, setAuthState] = useState(undefined as AuthState | null | undefined);
+  useEffect(() => (
+    auth.onAuthStateChanged((user) => {
+      setAuthState(user && {
+        id: user.uid,
+        displayName: user.displayName,
+        photoUrl: user.photoURL,
+      });
+    })
+  ), [])
+  return authState;
 }
 
 export function FirebaseProvider(props: {children?: React.ReactNode}) {

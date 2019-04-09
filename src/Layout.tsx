@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { AppBar, makeStyles, Theme, Drawer, Toolbar, IconButton } from '@material-ui/core';
+import { AppBar, makeStyles, Theme, Drawer, Toolbar, IconButton, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import SideBar from './SideBar';
+import ToolbarLogin from './ToolbarLogin';
 
 const drawerWidth = 240;
 const mobileBreakpoint = 600;
@@ -33,6 +34,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   toolbar: theme.mixins.toolbar,
+  title: {
+    flexGrow: 1,
+  },
   content: {
     flexGrow: 1,
     flexShrink: 1,
@@ -45,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 } as const));
 
 interface LayoutProps {
-  top: React.ReactNode;
+  title: string;
   left: React.ReactNode;
   children: React.ReactNode;
 }
@@ -95,7 +99,10 @@ function Layout(props: LayoutProps) {
       <AppBar position="fixed" className={styles.appBar}>
         <Toolbar>
           {menuButton}
-          {props.top}
+          <Typography variant='h6' color="inherit" className={styles.title}>
+            {props.title}
+          </Typography>
+          <ToolbarLogin />
         </Toolbar>
       </AppBar>
       <div className={isDesktop ? styles.desktopDrawer : undefined}>{drawer}</div>

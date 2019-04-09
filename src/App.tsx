@@ -43,17 +43,14 @@ function App() {
     </List>
     {rooms.length > 0 ? <Divider/> : null}
   </>;
+  const selectedRoom = rooms && rooms.find(room => room.id == selectedRoomId);
   const content = selectedRoomId ?
     <Chat roomId={selectedRoomId} /> :
     !rooms ?
     <CircularProgress /> :
     <Typography>Create a new chat from the side bar.</Typography>
   ;
-  const top = (
-    <Typography variant='h6' color="inherit">
-      Example Chat
-    </Typography>
-  );
+  const title = selectedRoom && selectedRoom.name || 'Example chat';
   const left = (
     <>
       {roomList}
@@ -63,7 +60,7 @@ function App() {
   return (
     <>
       <CssBaseline />
-      <Layout top={top} left={left}>{content}</Layout>
+      <Layout title={title} left={left}>{content}</Layout>
     </>
   );
 }
