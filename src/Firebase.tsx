@@ -25,15 +25,15 @@ export function useAuth() {
 
 export function useCollection<T>(ref: firebase.firestore.Query, deps: any[]) {
   const [items, setItems] = useState<T[] | null>(null);
-  useEffect(() => {
+  useEffect(() => (
     ref.onSnapshot((snapshot) => {
       const newItems = snapshot.docs.map((doc) => {
         const item: unknown = { id: doc.id, ...doc.data() };
         return item as T;
       });
       setItems(newItems)
-    });
-  }, deps);
+    })
+  ), deps);
   return items;
 }
 
