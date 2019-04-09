@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { CircularProgress, List, ListItem, ListItemText, ListItemAvatar } from '@material-ui/core';
 import { useFirestore, useCollection, useAuthState } from './Firebase';
 import firebase from 'firebase';
@@ -50,7 +50,8 @@ function useParticipants(chatId: string) {
 
 function ChatMessage(props: {message: string, sender?: Participant, createdAt: firebase.firestore.Timestamp}) {
   const {sender, message, createdAt} = props;
-  const date = createdAt.toDate();
+  const now = useMemo(() => new Date(), []);
+  const date = createdAt && createdAt.toDate() || now;
   const time = `${date.getHours()}:${date.getMinutes()}`
   const senderName = sender && sender.displayName || '';
   return (
@@ -94,7 +95,7 @@ function Chat({chatId}: ChatProps) {
       throw new Error('Not logged in!');
     }
     const batch = firestore.batch();
-    const createdAt = firebase.firestore.Timestamp.now();
+    const createdAt = firebase.firestore.FieldValue.serverTimestamp();
     batch.set(
       firestore.collection('chats').doc(chatId).collection('messages').doc(),
       {
