@@ -9,6 +9,8 @@ import LoadingSpinner from './LoadingSpinner';
 interface Chat {
   id: string;
   name: string;
+  messageCount?: number;
+  participantCount?: number;
 }
 
 function App() {
@@ -38,7 +40,11 @@ function App() {
           onClick={() => setSelectedChatId(chat.id)}
           selected={!!selectedChatId && chat.id === selectedChatId}
         >
-          <ListItemText primary={chat.name} primaryTypographyProps={{color: 'textPrimary'}} />
+          <ListItemText
+            primary={chat.name}
+            secondary={`${chat.messageCount || 0} messages, ${chat.participantCount || 0} participants`}
+            primaryTypographyProps={{color: 'textPrimary'}}
+          />
         </ListItem>
       ))}
     </List>

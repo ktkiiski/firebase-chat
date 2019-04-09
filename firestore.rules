@@ -2,7 +2,11 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /chats/{chatId} {
       allow read;
-      allow create: if request.auth.uid != null;
+      allow create:
+        if request.auth.uid != null
+        && !request.resource.data.messageCount
+        && !request.resource.data.participantCount
+      ;
 
       match /messages/{messageId} {
         allow read;
