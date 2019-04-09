@@ -1,60 +1,61 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import NewRoomForm from './NewRoomForm';
-import { Typography, CssBaseline, List, ListItem, ListItemText, CircularProgress, Divider } from '@material-ui/core';
+import NewChatForm from './NewChatForm';
+import { Typography, CssBaseline, List, ListItem, ListItemText, Divider } from '@material-ui/core';
 import Chat from './Chat';
 import Layout from './Layout';
 import { useFirestore, useCollection } from './Firebase';
+import LoadingSpinner from './LoadingSpinner';
 
-interface Room {
+interface Chat {
   id: string;
   name: string;
 }
 
 function App() {
   const firestore = useFirestore();
-  const rooms = useCollection<Room>(
-    firestore.collection('rooms').orderBy('name'), [],
+  const chats = useCollection<Chat>(
+    firestore.collection('chats').orderBy('name'), [],
   );
-  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!selectedRoomId && rooms && rooms.length > 0) {
-      setSelectedRoomId(rooms[0].id);
+    if (!selectedChatId && chats && chats.length > 0) {
+      setSelectedChatId(chats[0].id);
     }
-  }, [rooms, selectedRoomId])
+  }, [chats, selectedChatId])
 
-  const onNewRoomSubmit = useCallback(async function (name: string) {
-    const doc = await firestore.collection('rooms').add({ name });
-    setSelectedRoomId(doc.id);
+  const onNewChatSubmit = useCallback(async function (name: string) {
+    const doc = await firestore.collection('chats').add({ name });
+    setSelectedChatId(doc.id);
   }, [firestore]);
 
-  const roomList = !rooms ? <CircularProgress /> : <>
+  const chatList = !chats ? <LoadingSpinner /> : <>
     <List component='nav'>
-      {rooms.map((room) => (
+      {chats.map((chat) => (
         <ListItem
-          key={room.id}
+          key={chat.id}
           button
-          onClick={() => setSelectedRoomId(room.id)}
-          selected={!!selectedRoomId && room.id === selectedRoomId}
+          onClick={() => setSelectedChatId(chat.id)}
+          selected={!!selectedChatId && chat.id === selectedChatId}
         >
-          <ListItemText primary={room.name} primaryTypographyProps={{color: 'textPrimary'}} />
+          <ListItemText primary={chat.name} primaryTypographyProps={{color: 'textPrimary'}} />
         </ListItem>
       ))}
     </List>
-    {rooms.length > 0 ? <Divider/> : null}
+    {chats.length > 0 ? <Divider/> : null}
   </>;
-  const selectedRoom = rooms && rooms.find(room => room.id == selectedRoomId);
-  const content = selectedRoomId ?
-    <Chat roomId={selectedRoomId} /> :
-    !rooms ?
-    <CircularProgress /> :
+  const selectedChat = chats && chats.find(chat => chat.id === selectedChatId);
+  const content = selectedChatId ?
+    <Chat chatId={selectedChatId} /> :
+    !chats ?
+    <LoadingSpinner /> :
     <Typography>Create a new chat from the side bar.</Typography>
   ;
-  const title = selectedRoom && selectedRoom.name || 'Example chat';
+  const title = selectedChat && selectedChat.name || 'Example chat';
   const left = (
     <>
-      {roomList}
-      <NewRoomForm onSubmit={onNewRoomSubmit} />
+      {chatList}
+      <NewChatForm onSubmit={onNewChatSubmit} />
     </>
   );
   return (

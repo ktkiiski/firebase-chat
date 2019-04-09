@@ -1,7 +1,7 @@
 import React, {Ref} from 'react';
-import { makeStyles, Theme } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles({
   container: {
     height: '100%',
     display: 'flex',
@@ -16,19 +16,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflowY: 'scroll',
   },
   bottom: {
-    marginTop: theme.spacing(1),
     flexGrow: 0,
     flexShrink: 0,
   },
-} as const));
+});
 
-interface ConversationAreaProps {
+interface VerticalSplitProps {
   children: React.ReactNode;
   bottom: React.ReactNode;
   scrollableRef?: Ref<HTMLDivElement>;
 }
 
-function ConversationArea(props: ConversationAreaProps) {
+function VerticalSplit(props: VerticalSplitProps) {
   const classes = useStyles();
   return (
     <div className={classes.container}>
@@ -38,4 +37,4 @@ function ConversationArea(props: ConversationAreaProps) {
   );
 }
 
-export default ConversationArea;
+export default VerticalSplit;

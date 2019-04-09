@@ -1,7 +1,14 @@
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write;
+    match /chats/{roomId} {
+      allow read;
+      allow create: if request.auth.uid != null;
+
+      match /messages/{messageId} {
+        allow read;
+        allow create: if request.auth.uid != null;
+        allow delete: if resource.data.senderId == request.auth.uid;
+      }
     }
   }
 }

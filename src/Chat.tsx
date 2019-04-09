@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { CircularProgress, List, ListItem, ListItemText, ListItemAvatar, TextField } from '@material-ui/core';
+import React, { useEffect, useRef } from 'react';
+import { CircularProgress, List, ListItem, ListItemText, ListItemAvatar } from '@material-ui/core';
 import { useFirestore, useCollection, useAuthState } from './Firebase';
 import firebase from 'firebase';
-import ConversationArea from './ConversationArea';
+import VerticalSplit from './VerticalSplit';
 import ProfileAvatar from './ProfileAvatar';
+import Composition from './Composition';
 
 interface Message {
   id: string;
@@ -20,30 +21,30 @@ interface Participant {
 }
 
 interface ChatProps {
-  roomId: string;
+  chatId: string;
 }
 
-function useMessages(roomId: string) {
+function useMessages(chatId: string) {
   const firestore = useFirestore();
   return useCollection<Message>(
     firestore
-      .collection('rooms')
-      .doc(roomId)
+      .collection('chats')
+      .doc(chatId)
       .collection('messages')
       .orderBy('createdAt'),
-    [roomId],
+    [chatId],
   );
 }
 
-function useParticipants(roomId: string) {
+function useParticipants(chatId: string) {
   const firestore = useFirestore();
   return useCollection<Message>(
     firestore
-      .collection('rooms')
-      .doc(roomId)
+      .collection('chats')
+      .doc(chatId)
       .collection('participants')
       .orderBy('displayName'),
-    [roomId],
+    [chatId],
   );
 }
 
@@ -65,14 +66,13 @@ function ChatMessage(props: {message: string, sender?: Participant, createdAt: f
   );
 }
 
-function Chat({roomId}: ChatProps) {
+function Chat({chatId}: ChatProps) {
   const firestore = useFirestore();
-  const messages = useMessages(roomId);
-  const participants = useParticipants(roomId);
+  const messages = useMessages(chatId);
+  const participants = useParticipants(chatId);
   const authState = useAuthState();
   const messageCount = messages && messages.length;
   const scrollableRef = useRef<HTMLDivElement>(null);
-  const [newMessage, setNewMessage] = useState('');
   const participantsById: Record<string, Participant> = {};
 
   if (participants) {
@@ -87,22 +87,16 @@ function Chat({roomId}: ChatProps) {
       // Scroll to the bottom
       current.scrollTop = current.scrollHeight;
     }
-  }, [messageCount, roomId]);
+  }, [messageCount, chatId]);
 
-  const onMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewMessage(event.target.value);
-  };
-
-  const onSendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const onSendMessage = async (newMessage: string) => {
     if (!authState) {
       throw new Error('Not logged in!');
     }
-    setNewMessage('');
     const batch = firestore.batch();
     const createdAt = firebase.firestore.Timestamp.now();
     batch.set(
-      firestore.collection('rooms').doc(roomId).collection('messages').doc(),
+      firestore.collection('chats').doc(chatId).collection('messages').doc(),
       {
         message: newMessage,
         senderId: authState.id,
@@ -110,7 +104,7 @@ function Chat({roomId}: ChatProps) {
       },
     );
     batch.set(
-      firestore.collection('rooms').doc(roomId).collection('participants').doc(authState.id),
+      firestore.collection('chats').doc(chatId).collection('participants').doc(authState.id),
       {
         displayName: authState.displayName,
         photoUrl: authState.photoUrl,
@@ -123,18 +117,9 @@ function Chat({roomId}: ChatProps) {
   if (!messages) {
     return <CircularProgress />;
   }
-  const form = authState ? (
-    <form onSubmit={onSendMessage}>
-      <TextField
-        placeholder="Type a new message"
-        value={newMessage}
-        onChange={onMessageChange}
-        fullWidth
-      />
-    </form>
-  ) : null;
+  const form = authState ? <Composition onSendMessage={onSendMessage} /> : null;
   return (
-    <ConversationArea bottom={form} scrollableRef={scrollableRef}>
+    <VerticalSplit bottom={form} scrollableRef={scrollableRef}>
       <List>
         {messages.map(message => {
           const sender = participantsById[message.senderId];
@@ -146,7 +131,7 @@ function Chat({roomId}: ChatProps) {
           />;
         })}
       </List>
-    </ConversationArea>
+    </VerticalSplit>
   );
 }
 

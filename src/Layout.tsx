@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   content: {
     flexGrow: 1,
     flexShrink: 1,
-    padding: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',

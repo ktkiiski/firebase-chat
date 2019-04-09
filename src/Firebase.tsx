@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import LoadingSpinner from './LoadingSpinner';
 
 export const FirebaseContext = React.createContext<firebase.app.App | null>(null);
 
@@ -63,7 +64,7 @@ export function FirebaseProvider(props: {children?: React.ReactNode}) {
     loadApp().then(setApp);
   }, []);
   if (!app) {
-    return <div>Loading Firebase configuration…</div>;
+    return <LoadingSpinner />;
   }
   return <FirebaseContext.Provider value={app}>
     {props.children}
