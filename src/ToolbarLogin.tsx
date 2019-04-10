@@ -48,7 +48,7 @@ function ToolbarLogin() {
     return <CircularProgress color="inherit" size={24} />;
   }
   if (!user) {
-    return <Button color="inherit" onClick={login}>Login</Button>;
+    return <Button color="inherit" onClick={login}>Sign in</Button>;
   }
   const avatar = <ButtonBase centerRipple onClick={openMenu}>
     <ProfileAvatar user={user} className={classes.avatar} />

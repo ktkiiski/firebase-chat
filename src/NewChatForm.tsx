@@ -3,10 +3,11 @@ import { TextField, Button } from '@material-ui/core';
 import Padder from './Padder';
 
 interface NewChatFormProps {
+  isSignedIn: boolean;
   onSubmit: (chatName: string) => Promise<void>;
 }
 
-function NewChatForm({onSubmit}: NewChatFormProps) {
+function NewChatForm({onSubmit, isSignedIn}: NewChatFormProps) {
   const [name, setName] = useState('');
   const [isLoading, setLoading] = useState(false);
   const onClick: React.MouseEventHandler = (event) => {
@@ -29,11 +30,11 @@ function NewChatForm({onSubmit}: NewChatFormProps) {
     <Padder padding={2}>
       <form onSubmit={onFormSubmit} onClick={onClick}>
         <TextField
-          label="Create new chat"
+          label={isSignedIn ? `Create new chat` : `Sign in to start a chat`}
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Type chat title"
-          disabled={isLoading}
+          disabled={isLoading || !isSignedIn}
           fullWidth
           />
         <Button

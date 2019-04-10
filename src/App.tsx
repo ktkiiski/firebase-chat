@@ -115,7 +115,7 @@ function App() {
       bottom={<>
         {deleteButton}
         <Divider />
-        <NewChatForm onSubmit={onNewChatSubmit} />
+        <NewChatForm onSubmit={onNewChatSubmit} isSignedIn={!!user} />
       </>}
     >
       {chatList}
