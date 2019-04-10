@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Kiiski Chat",
+  "name": "An example chat web app built on Firebase",
   "icons": [
     {
       "src": "favicon.ico",
