@@ -1,8 +1,31 @@
+# Example Firebase chat web app
+
+![Screenshot of the example chat](./screenshot.png)
+
+**Demo available at: https://kiiski-chat.firebaseapp.com/**
+
+This project is a working proof-of-concept of a chat web application build on top of the Firebase.
+
+It includes the following features:
+
+- **Serverless** hosting on **[Firebase](https://firebase.google.com/)**
+- UI build with **React**, **Firebase SDK**, and **[Material UI](https://material-ui.com/)**
+- **User authentication** with a Google account
+- **Real-time** changes provided by Firestore SDK
+- Example **security rules** to protect the database
+- Scripts for running locally and deploying
+
+**This motivation of this project was to learn Firebase. It is not meant for actual production use.**
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Development
 
 In the project directory, you can run:
+
+### `npm install`
+
+Install required dependencies in order to run, develop and deploy the app.
 
 ### `npm start`
 
@@ -12,10 +35,11 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
 
-### `npm test`
+It will also automatically run the local Firebase hosting service.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### `npm run deploy`
+
+Deploys the production ready app to be hosted on Firebase.
 
 ### `npm run build`
 
@@ -26,43 +50,3 @@ The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
