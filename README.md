@@ -10,6 +10,7 @@ It includes the following features:
 
 - **Serverless** hosting on **[Firebase](https://firebase.google.com/)**
 - UI build with **React**, **Firebase SDK**, and **[Material UI](https://material-ui.com/)**
+- Both frontend and backend written with **Typescript**
 - **User authentication** with a Google account
 - **Real-time** changes provided by Firestore SDK
 - Example **security rules** to protect the database
