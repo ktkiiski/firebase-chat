@@ -4,9 +4,12 @@ service cloud.firestore {
       allow read;
       allow create:
         if request.auth.uid != null
-        && !request.resource.data.messageCount
-        && !request.resource.data.participantCount
+        && request.resource.data.creatorId == request.auth.uid
+        && request.resource.data.messageCount == 0
+        && request.resource.data.participantCount == 0
+        && request.resource.data.createdAt.toMillis() == request.time.toMillis()
       ;
+      allow delete: if resource.data.creatorId == request.auth.uid;
 
       match /messages/{messageId} {
         allow read;
