@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { TextField, Button } from '@material-ui/core';
 import Padder from './Padder';
 
-interface NewRoomFormProps {
-  onSubmit: (roomName: string) => Promise<void>;
+interface NewChatFormProps {
+  onSubmit: (chatName: string) => Promise<void>;
 }
 
-function NewRoomForm({onSubmit}: NewRoomFormProps) {
+function NewChatForm({onSubmit}: NewChatFormProps) {
   const [name, setName] = useState('');
   const [isLoading, setLoading] = useState(false);
   const onClick: React.MouseEventHandler = (event) => {
@@ -29,10 +29,10 @@ function NewRoomForm({onSubmit}: NewRoomFormProps) {
     <Padder padding={2}>
       <form onSubmit={onFormSubmit} onClick={onClick}>
         <TextField
-          label="Create new room"
+          label="Create new chat"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="Type room name"
+          placeholder="Type chat title"
           disabled={isLoading}
           fullWidth
           />
@@ -45,4 +45,4 @@ function NewRoomForm({onSubmit}: NewRoomFormProps) {
   )
 }
 
-export default React.memo(NewRoomForm);
+export default React.memo(NewChatForm);

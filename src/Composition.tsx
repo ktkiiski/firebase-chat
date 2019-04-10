@@ -3,10 +3,12 @@ import { TextField } from '@material-ui/core';
 import Padder from './Padder';
 
 interface CompositionProps {
+  isSignedIn: boolean;
   onSendMessage: (message: string) => Promise<void>;
 }
 
 function Composition(props: CompositionProps) {
+  const {isSignedIn, onSendMessage} = props;
   const [message, setMessage] = useState('');
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -16,16 +18,17 @@ function Composition(props: CompositionProps) {
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage('');
-    await props.onSendMessage(message);
+    await onSendMessage(message);
   }
 
   return (
     <Padder padding={2}>
       <form onSubmit={onSubmit}>
         <TextField
-          placeholder="Type a new message"
-          value={message}
+          placeholder={isSignedIn ? `Type a new message` : `Please sign in to send a message`}
+          value={isSignedIn ? message : ''}
           onChange={onChange}
+          disabled={!isSignedIn}
           fullWidth
         />
       </form>

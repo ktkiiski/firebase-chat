@@ -92,21 +92,30 @@ function App() {
     <Chat chatId={selectedChatId} /> :
     !chats ?
     <LoadingSpinner /> :
-    <Typography>Create a new chat from the side bar.</Typography>
+    <Padder padding={4}>
+      <Typography variant='h5' color='textSecondary'>
+        Welcome!
+      </Typography>
+      <Typography color='textSecondary'>
+        Start a new chat from the app menu!
+      </Typography>
+    </Padder>
   ;
   const title = selectedChat && selectedChat.name || 'Example chat';
   const isCreator = selectedChat && user && selectedChat.creatorId === user.id;
-  const deleteButton = !isCreator ? null : (
+  const deleteButton = !selectedChat ? null : (
     <Padder padding={2}>
-      <Button onClick={onDeleteClick}>Delete chat</Button>
-    </Padder>
+    <Button onClick={onDeleteClick} disabled={!isCreator}>
+      Delete chat
+    </Button>
+  </Padder>
   );
   const left = (
     <VerticalSplit
       bottom={<>
+        {deleteButton}
         <Divider />
         <NewChatForm onSubmit={onNewChatSubmit} />
-        {deleteButton}
       </>}
     >
       {chatList}

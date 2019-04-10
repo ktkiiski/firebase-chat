@@ -119,7 +119,7 @@ function Chat({chatId}: ChatProps) {
   if (!messages) {
     return <CircularProgress />;
   }
-  const form = authState ? <Composition onSendMessage={onSendMessage} /> : null;
+  const form = <Composition onSendMessage={onSendMessage} isSignedIn={!!authState} />;
   const messageList = messages.length ? (
     <List>
       {messages.map(message => {
