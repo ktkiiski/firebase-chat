@@ -6,6 +6,8 @@ import Layout from './Layout';
 import { useFirestore, useCollection, useAuthState } from './Firebase';
 import LoadingSpinner from './LoadingSpinner';
 import firebase from 'firebase/app';
+import Padder from './Padder';
+import VerticalSplit from './VerticalSplit';
 
 interface Chat {
   id: string;
@@ -24,6 +26,16 @@ function App() {
   );
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const selectedChat = chats && chats.find(chat => chat.id === selectedChatId);
+
+  const userId = user && user.id;
+  const userName = user && user.displayName;
+  useEffect(() => {
+    if (userId === null) {
+      console.log(`Not logged in!`);
+    } else if (userId) {
+      console.log(`Welcome, ${userName}! Your user ID is ${userId}`);
+    }
+  }, [userId, userName]);
 
   useEffect(() => {
     if (!selectedChatId && chats && chats.length > 0) {
@@ -75,7 +87,6 @@ function App() {
         </ListItem>
       ))}
     </List>
-    {chats.length > 0 ? <Divider/> : null}
   </>;
   const content = selectedChatId ?
     <Chat chatId={selectedChatId} /> :
@@ -84,16 +95,22 @@ function App() {
     <Typography>Create a new chat from the side bar.</Typography>
   ;
   const title = selectedChat && selectedChat.name || 'Example chat';
-  const isCreated = selectedChat && user && selectedChat.creatorId === user.id;
-  const deleteButton = !isCreated ? null : (
-    <Button onClick={onDeleteClick}>Delete chat</Button>
+  const isCreator = selectedChat && user && selectedChat.creatorId === user.id;
+  const deleteButton = !isCreator ? null : (
+    <Padder padding={2}>
+      <Button onClick={onDeleteClick}>Delete chat</Button>
+    </Padder>
   );
   const left = (
-    <>
+    <VerticalSplit
+      bottom={<>
+        <Divider />
+        <NewChatForm onSubmit={onNewChatSubmit} />
+        {deleteButton}
+      </>}
+    >
       {chatList}
-      <NewChatForm onSubmit={onNewChatSubmit} />
-      {deleteButton}
-    </>
+    </VerticalSplit>
   );
   return (
     <>

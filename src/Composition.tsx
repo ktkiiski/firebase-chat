@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
-import { makeStyles, Theme, TextField } from '@material-ui/core';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  form: {
-    padding: theme.spacing(2),
-  },
-}));
+import { TextField } from '@material-ui/core';
+import Padder from './Padder';
 
 interface CompositionProps {
   onSendMessage: (message: string) => Promise<void>;
 }
 
 function Composition(props: CompositionProps) {
-  const classes = useStyles();
   const [message, setMessage] = useState('');
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -26,14 +20,16 @@ function Composition(props: CompositionProps) {
   }
 
   return (
-    <form className={classes.form} onSubmit={onSubmit}>
-      <TextField
-        placeholder="Type a new message"
-        value={message}
-        onChange={onChange}
-        fullWidth
-      />
-    </form>
+    <Padder padding={2}>
+      <form onSubmit={onSubmit}>
+        <TextField
+          placeholder="Type a new message"
+          value={message}
+          onChange={onChange}
+          fullWidth
+        />
+      </form>
+    </Padder>
   );
 }
 

@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles({
   container: {
-    height: '100%',
+    flexGrow: 1,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',

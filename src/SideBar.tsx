@@ -12,6 +12,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   sidebar: {
     backgroundColor: theme.palette.background.default,
     height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
   },
 } as const));
 

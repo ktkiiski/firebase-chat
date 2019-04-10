@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
-import { TextField, Button, Theme } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  form: {
-    padding: theme.spacing(1),
-  },
-} as const));
+import { TextField, Button } from '@material-ui/core';
+import Padder from './Padder';
 
 interface NewRoomFormProps {
   onSubmit: (roomName: string) => Promise<void>;
 }
 
 function NewRoomForm({onSubmit}: NewRoomFormProps) {
-  const styles = useStyles();
   const [name, setName] = useState('');
   const [isLoading, setLoading] = useState(false);
   const onClick: React.MouseEventHandler = (event) => {
@@ -33,20 +26,22 @@ function NewRoomForm({onSubmit}: NewRoomFormProps) {
     }
   }
   return (
-    <form onSubmit={onFormSubmit} className={styles.form} onClick={onClick}>
-      <TextField
-        label="Create new room"
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-        placeholder="Type room name"
-        disabled={isLoading}
-        fullWidth
-      />
-      <Button
-        type="submit"
-        disabled={!name || isLoading}
-      >Create</Button>
-    </form>
+    <Padder padding={2}>
+      <form onSubmit={onFormSubmit} onClick={onClick}>
+        <TextField
+          label="Create new room"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Type room name"
+          disabled={isLoading}
+          fullWidth
+          />
+        <Button
+          type="submit"
+          disabled={!name || isLoading}
+          >Create new chat</Button>
+      </form>
+    </Padder>
   )
 }
 
