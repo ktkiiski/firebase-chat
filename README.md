@@ -1,6 +1,6 @@
 # Example Firebase chat web app
 
-![Screenshot of the example chat](./screenshot.png)
+<img src="./screenshot.png" style="max-width: 700px" title="Screenshot">
 
 **Demo available at: https://kiiski-chat.firebaseapp.com/**
 
