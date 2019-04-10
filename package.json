@@ -21,6 +21,7 @@
     "start:react": "react-scripts start",
     "start:firebase": "npm run build:firebase && npm run start:firebase:serve",
     "start:firebase:serve": "firebase serve -p 4000",
+    "deploy": "firebase deploy",
     "build": "npm run build:react && npm run build:firebase",
     "build:react": "react-scripts build",
     "build:firebase": "npm --prefix='functions' run build",
