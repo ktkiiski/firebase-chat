@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useMemo } from 'react';
-import { CircularProgress, List, ListItem, ListItemText, ListItemAvatar } from '@material-ui/core';
+import { CircularProgress, List, ListItem, ListItemText, ListItemAvatar, Typography } from '@material-ui/core';
 import { useFirestore, useCollection, useAuthState } from './Firebase';
 import firebase from 'firebase/app';
 import VerticalSplit from './VerticalSplit';
 import ProfileAvatar from './ProfileAvatar';
 import Composition from './Composition';
+import Padder from './Padder';
 
 interface Message {
   id: string;
@@ -119,19 +120,28 @@ function Chat({chatId}: ChatProps) {
     return <CircularProgress />;
   }
   const form = authState ? <Composition onSendMessage={onSendMessage} /> : null;
+  const messageList = messages.length ? (
+    <List>
+      {messages.map(message => {
+        const sender = participantsById[message.senderId];
+        return <ChatMessage
+          key={message.id}
+          message={message.message}
+          sender={sender}
+          createdAt={message.createdAt}
+        />;
+      })}
+    </List>
+  ) : (
+    <Padder padding={4}>
+      <Typography color='textSecondary'>
+        Start chatting by typing your message below!
+      </Typography>
+    </Padder>
+  );
   return (
     <VerticalSplit bottom={form} scrollableRef={scrollableRef}>
-      <List>
-        {messages.map(message => {
-          const sender = participantsById[message.senderId];
-          return <ChatMessage
-            key={message.id}
-            message={message.message}
-            sender={sender}
-            createdAt={message.createdAt}
-          />;
-        })}
-      </List>
+    {messageList}
     </VerticalSplit>
   );
 }
