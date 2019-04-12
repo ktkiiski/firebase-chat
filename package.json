@@ -17,10 +17,11 @@
     "typescript": "3.4.1"
   },
   "scripts": {
-    "start": "npm run build:firebase && run-p --race start:firebase:serve start:react",
+    "start": "npm-run-all build:firebase -p --race start:firebase:watch start:firebase:serve start:react",
     "start:react": "react-scripts start",
-    "start:firebase": "npm run build:firebase && npm run start:firebase:serve",
+    "start:firebase": "npm-run-all build:firebase -p --race start:firebase:watch start:firebase:serve",
     "start:firebase:serve": "firebase serve -p 4000",
+    "start:firebase:watch": "npm --prefix='functions' run watch",
     "deploy": "firebase deploy",
     "build": "npm run build:react && npm run build:firebase",
     "build:react": "react-scripts build",
