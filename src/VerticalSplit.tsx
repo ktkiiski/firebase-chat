@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     flexShrink: 1,
     flexBasis: 0,
     overflowX: 'hidden',
-    overflowY: 'scroll',
+    overflowY: 'auto',
   },
   bottom: {
     flexGrow: 0,
