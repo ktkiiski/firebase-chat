@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Button, CircularProgress, Theme, makeStyles, Hidden, Menu, MenuItem, ButtonBase } from '@material-ui/core';
-import { useAuthState, useAuth } from './Firebase';
+import { useAuthState, useAuth } from '../firebase';
 import * as firebase from 'firebase/app';
 import ProfileAvatar from './ProfileAvatar';
 

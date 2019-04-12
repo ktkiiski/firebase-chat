@@ -3,7 +3,7 @@ import NewChatForm from './NewChatForm';
 import { Typography, CssBaseline, List, ListItem, ListItemText, Divider, Button } from '@material-ui/core';
 import Chat from './Chat';
 import Layout from './Layout';
-import { useFirestore, useCollection, useAuthState } from './Firebase';
+import { useFirestore, useCollection, useAuthState } from '../firebase';
 import LoadingSpinner from './LoadingSpinner';
 import firebase from 'firebase/app';
 import Padder from './Padder';

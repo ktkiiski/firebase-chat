@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useMemo } from 'react';
 import { CircularProgress, List, ListItem, ListItemText, ListItemAvatar, Typography } from '@material-ui/core';
-import { useFirestore, useCollection, useAuthState } from './Firebase';
+import { useFirestore, useCollection, useAuthState } from '../firebase';
 import firebase from 'firebase/app';
 import VerticalSplit from './VerticalSplit';
 import ProfileAvatar from './ProfileAvatar';

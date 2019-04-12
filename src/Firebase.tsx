@@ -3,7 +3,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import LoadingSpinner from './LoadingSpinner';
 
 export const FirebaseContext = React.createContext<firebase.app.App | null>(null);
 
@@ -58,13 +57,18 @@ export function useAuthState() {
   return authState;
 }
 
-export function FirebaseProvider(props: {children?: React.ReactNode}) {
+interface FirebaseProviderProps {
+  placeholder?: JSX.Element;
+  children: React.ReactNode;
+}
+
+export function FirebaseProvider(props: FirebaseProviderProps) {
   const [app, setApp] = useState<null | firebase.app.App>(null);
   useEffect(() => {
     loadApp().then(setApp);
   }, []);
   if (!app) {
-    return <LoadingSpinner />;
+    return props.placeholder || null;
   }
   return <FirebaseContext.Provider value={app}>
     {props.children}
